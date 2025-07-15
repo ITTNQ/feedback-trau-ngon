@@ -5,65 +5,22 @@
   <title>Đánh giá chất lượng phục vụ – TRÂU NGON QUÁN</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    :root{
-      --primary:#ffca08;
-      --neutral:#ccc;
-      --bg:#f9fafb;
-    }
-    body{
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-      background:var(--bg);
-      margin:0;
-      display:flex;
-      justify-content:center;
-      padding:2rem;
-    }
-    /*------------- Card & Watermark -------------*/
-    .card{
-      background:#fff;
-      border-radius:1rem;
-      box-shadow:0 4px 20px rgba(0,0,0,.08);
-      max-width:480px;
-      width:100%;
-      padding:1.5rem 2rem;
-      position:relative;           /* enable pseudo‑element */
-      overflow:hidden;             /* hide excess logo */
-    }
-    /* pseudo‑element làm logo mờ 20% */
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:url('LOGO.png') center/80% no-repeat; /* để file LOGO.png cùng thư mục */
-      opacity:0.1;                /* ~20% */
-      z-index:0;                  /* dưới nội dung */
-      pointer-events:none;
-    }
-    /* đặt z‑index cho mọi phần tử con để nằm trên watermark */
-    .card *{position:relative; z-index:1;}
-
-    /*------------- Typography & Form -------------*/
-    h1, h2{text-align:center;margin:0;}
-    h2{font-size:1.5rem;text-transform:uppercase;}
+    :root{--primary:#ffca08;--neutral:#ccc;--bg:#f9fafb;}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);margin:0;display:flex;justify-content:center;padding:2rem;}
+    .card{background:#fff;border-radius:1rem;box-shadow:0 4px 20px rgba(0,0,0,.08);max-width:480px;width:100%;padding:1.5rem 2rem;position:relative;overflow:hidden;}
+    .card::before{content:"";position:absolute;inset:0;background:url('LOGO.png') center/80% no-repeat;opacity:0.1;z-index:0;pointer-events:none;}
+    .card *{position:relative;z-index:1;}
+    h1,h2{text-align:center;margin:0;}h2{font-size:1.5rem;text-transform:uppercase;}
     .restaurant-name{text-align:center;font-weight:700;margin:.5rem 0 1.5rem;text-transform:uppercase;font-size:1.25rem;}
-
     label{display:block;margin:.75rem 0 .25rem;font-weight:600;}
     textarea{resize:vertical;min-height:90px;}
-    input[type="text"],input[type="tel"],textarea{
-      width:100%;padding:.5rem .75rem;border:1px solid #ddd;border-radius:.5rem;font-size:1rem;
-    }
-
-    /*------------- Rating Stars -------------*/
+    input[type="text"],input[type="tel"],textarea{width:100%;padding:.5rem .75rem;border:1px solid #ddd;border-radius:.5rem;font-size:1rem;}
     .rating{direction:rtl;display:inline-flex;gap:.25rem;font-size:1.75rem;}
     .rating>input{display:none;}
     .rating>label{cursor:pointer;color:var(--neutral);transition:color .2s;}
-    .rating>input:checked~label,
-    .rating>label:hover,
-    .rating>label:hover~label{color:var(--primary);}
-
-    /*------------- Button -------------*/
+    .rating>input:checked~label,.rating>label:hover,.rating>label:hover~label{color:var(--primary);}
     button{display:block;margin:1.5rem auto 0;padding:.6rem 1.5rem;border:none;background:var(--primary);color:#000;font-weight:600;border-radius:.5rem;font-size:1rem;cursor:pointer;transition:transform .15s;}
-    button:active{transform:scale(.97);} 
+    button:active{transform:scale(.97);}  
   </style>
 </head>
 <body>
@@ -72,11 +29,15 @@
       <p class="restaurant-name">NHÀ HÀNG TRÂU NGON QUÁN</p>
 
     <form id="fbForm" autocomplete="off">
+      <!-- Hidden lưu UUID thiết bị & user‑agent -->
+      <input type="hidden" id="uuid"       name="uuid"       />
+      <input type="hidden" id="deviceInfo" name="deviceInfo" />
+
       <label for="customerName">Tên khách hàng</label>
-      <input id="customerName" name="customerName" type="text" placeholder="Anh/chị...." required>
+      <input id="customerName" name="customerName" type="text" placeholder="Anh/chị..." required>
 
       <label for="phone">Số điện thoại</label>
-      <input id="phone" name="phone" type="tel" inputmode="numeric" pattern="\d{10}" maxlength="10" placeholder="09xxxxxxx" required title="Nhập đúng 10 chữ số">
+      <input id="phone" name="phone" type="tel" inputmode="numeric" pattern="\d{10}" maxlength="10" placeholder="09xxxxxxxx" required title="Nhập đúng 10 chữ số">
 
       <label>Chất lượng món ăn</label>
       <div class="rating">
@@ -116,13 +77,25 @@
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyK1o3oj_1nupWHZSxyjELU0FTPEi4A8RMrqoCTKXDSB6Hn_AifB_5-687gN5yuhNc9IQ/exec';
     const form = document.getElementById('fbForm');
 
+    // Hàm sinh UUID v4 đơn giản
+    function generateUUID(){return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0,v=c=='x'?r:(r&0x3|0x8);return v.toString(16);});}
+
+    // Lấy/ tạo UUID lưu LocalStorage
+    const uuidKey = 'feedbackUUID';
+    let uuid = localStorage.getItem(uuidKey);
+    if(!uuid){ uuid = generateUUID(); localStorage.setItem(uuidKey, uuid); }
+    document.getElementById('uuid').value = uuid;
+
+    // Lưu user‑agent
+    document.getElementById('deviceInfo').value = navigator.userAgent;
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
 
       if(!/^\d{10}$/.test(data.phone)){
-        alert('Anh/chị Vui lòng nhập số điện thoại gồm đúng 10 chữ số.');
+        alert('Anh/chị vui lòng nhập số điện thoại gồm đúng 10 chữ số.');
         return;
       }
 
@@ -136,14 +109,13 @@
           body: JSON.stringify(data)
         });
 
-        // Sau khi gửi xong, hiển thị alert và điều hướng
-        if (confirm(`Cảm ơn anh/chị ${data.customerName} đã đánh giá!.`)) {
+        if(confirm(`Cảm ơn anh/chị ${data.customerName} đã đánh giá!`)){
           window.location.href = 'https://traungonquan.vn/';
         }
 
         form.reset();
-        document.querySelectorAll('.rating input').forEach(i => i.checked = false);
-      } catch (err) {
+        document.querySelectorAll('.rating input').forEach(i=>i.checked=false);
+      } catch(err){
         console.error(err);
         alert('Có lỗi xảy ra, vui lòng thử lại.');
       }
