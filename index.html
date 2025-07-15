@@ -76,7 +76,7 @@
       <input id="customerName" name="customerName" type="text" placeholder="Anh/chị...." required>
 
       <label for="phone">Số điện thoại</label>
-      <input id="phone" name="phone" type="tel" inputmode="numeric" pattern="\d{10}" maxlength="10" placeholder="" required title="Nhập đúng 10 chữ số">
+      <input id="phone" name="phone" type="tel" inputmode="numeric" pattern="\d{10}" maxlength="10" placeholder="09xxxxxxx" required title="Nhập đúng 10 chữ số">
 
       <label>Chất lượng món ăn</label>
       <div class="rating">
@@ -122,7 +122,7 @@
       const data = Object.fromEntries(formData.entries());
 
       if(!/^\d{10}$/.test(data.phone)){
-        alert('Anh/ chị vui lòng nhập số điện thoại gồm đúng 10 chữ số.');
+        alert('Anh/chị Vui lòng nhập số điện thoại gồm đúng 10 chữ số.');
         return;
       }
 
@@ -135,7 +135,12 @@
           headers: {'Content-Type':'application/json'},
           body: JSON.stringify(data)
         });
-        alert(`Cảm ơn anh/chị ${data.customerName} đã đánh giá!`);
+
+        // Sau khi gửi xong, hiển thị alert và điều hướng
+        if (confirm(`Cảm ơn anh/chị ${data.customerName} đã đánh giá!.`)) {
+          window.location.href = 'https://traungonquan.vn/';
+        }
+
         form.reset();
         document.querySelectorAll('.rating input').forEach(i => i.checked = false);
       } catch (err) {
