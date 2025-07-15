@@ -8,7 +8,7 @@
     :root{--primary:#ffca08;--neutral:#ccc;--bg:#f9fafb;--modal-bg:rgba(0,0,0,.6);}  
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);margin:0;display:flex;justify-content:center;padding:2rem;}
     .card{background:#fff;border-radius:1rem;box-shadow:0 4px 20px rgba(0,0,0,.08);max-width:480px;width:100%;padding:1.5rem 2rem;position:relative;overflow:hidden;}
-    .card::before{content:"";position:absolute;inset:0;background:url('LOGO.png') center/80% no-repeat;opacity:0.1;z-index:0;pointer-events:none;}
+    .card::before{content:"";position:absolute;inset:0;background:url('LOGO.png') center/80% no-repeat;opacity:0.1;pointer-events:none;}
     .card *{position:relative;z-index:1;}
     h2{text-align:center;margin:0;font-size:1.5rem;text-transform:uppercase;}
     .restaurant-name{text-align:center;font-weight:700;margin:.5rem 0 1.5rem;text-transform:uppercase;font-size:1.25rem;}
@@ -23,30 +23,27 @@
     button:disabled{opacity:.5;cursor:not-allowed;}
     button:active{transform:scale(.97);}  
     .modal{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;background:var(--modal-bg);z-index:9999;}
-    .modal-content{background:#fff;border-radius:1rem;padding:2rem;max-width:320px;width:90%;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.2);}    
-    .modal-content h3{margin-top:0;font-size:1.25rem;}
-    .modal-content input{width:100%;padding:.5rem;border:1px solid #ddd;border-radius:.5rem;font-size:1rem;margin-top:.75rem;}
+    .modal-content{background:#fff;border-radius:1rem;padding:2rem;max-width:340px;width:90%;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.2);}    
+    .modal-content h3{margin:0 0 1rem;font-size:1.25rem;}
+    .modal-content input{width:100%;padding:.5rem;border:1px solid #ddd;border-radius:.5rem;font-size:1rem;margin-top:.5rem;}
     .modal-content button{margin-top:1rem;width:100%;}
     #thankYouBox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:9999;}
     #thankYouContent{background:white;padding:2rem 1.5rem;border-radius:1rem;box-shadow:0 6px 24px rgba(0,0,0,.2);text-align:center;max-width:320px;}
     #thankYouContent h3{margin:0 0 1rem;font-size:1.25rem;}
-    #thankYouContent button{width:100%;margin-top:1rem;}
   </style>
 </head>
 <body>
+  <!-- Popup: mã nhân viên + số bàn -->
   <div id="staffModal" class="modal">
     <div class="modal-content">
-      <h3>Nhập mã nhân viên phục vụ</h3>
-      <input id="staffCodeInput"
-       type="tel"
-       inputmode="numeric"
-       pattern="\d{4}"
-       maxlength="4"
-       placeholder="4 số cuối mã nv" />
+      <h3>Nhập mã nhân viên và số bàn</h3>
+      <input id="staffCodeInput" type="tel" inputmode="numeric" pattern="\d{4}" maxlength="4" placeholder="Mã NV (4 số)" />
+      <input id="tableNumberInput" type="text" pattern="[A-Za-z0-9]{1,5}" maxlength="5" placeholder="Số bàn (vd A12)" />
       <button id="confirmStaff">Xác nhận</button>
     </div>
   </div>
 
+  <!-- Popup cảm ơn -->
   <div id="thankYouBox">
     <div id="thankYouContent">
       <h3 id="thankYouText"></h3>
@@ -54,13 +51,15 @@
     </div>
   </div>
 
-  <div class="card" id="mainCard" style="opacity:.3; pointer-events:none;">
+  <!-- Form chính -->
+  <div class="card" id="mainCard" style="opacity:.3;pointer-events:none;">
     <h2>ĐÁNH GIÁ CHẤT LƯỢNG PHỤC VỤ</h2>
     <p class="restaurant-name">NHÀ HÀNG TRÂU NGON QUÁN</p>
 
     <form id="fbForm" autocomplete="off">
-      <input type="hidden" id="timestamp"  name="timestamp">
-      <input type="hidden" id="staffCode"  name="staffCode">
+      <input type="hidden" id="timestamp"   name="timestamp">
+      <input type="hidden" id="staffCode"   name="staffCode">
+      <input type="hidden" id="tableNumber" name="tableNumber">
 
       <label for="customerName">Tên khách hàng</label>
       <input id="customerName" name="customerName" type="text" placeholder="Anh/chị..." required>
@@ -105,27 +104,28 @@
   <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwcbq4aw6joXHIQXC9RSSyPyhBZ0_EvmVHcCwbZEobY4zj8bXTYm1nC22Qy7E7Y8WdPZQ/exec';
 
-    const staffModal = document.getElementById('staffModal');
-    const staffCodeInput = document.getElementById('staffCodeInput');
-    const confirmBtn = document.getElementById('confirmStaff');
+    const staffModal      = document.getElementById('staffModal');
+    const staffCodeInput  = document.getElementById('staffCodeInput');
+    const tableInput      = document.getElementById('tableNumberInput');
+    const confirmBtn      = document.getElementById('confirmStaff');
     const staffCodeHidden = document.getElementById('staffCode');
-    const mainCard = document.getElementById('mainCard');
-    const submitBtn = document.getElementById('submitBtn');
-    const form = document.getElementById('fbForm');
-    const thankYouBox = document.getElementById('thankYouBox');
-    const thankYouText = document.getElementById('thankYouText');
-
-
+    const tableHidden     = document.getElementById('tableNumber');
+    const mainCard        = document.getElementById('mainCard');
+    const submitBtn       = document.getElementById('submitBtn');
+    const form            = document.getElementById('fbForm');
+    const thankYouBox     = document.getElementById('thankYouBox');
+    const thankYouText    = document.getElementById('thankYouText');
 
     function activateForm(){
       const code = staffCodeInput.value.trim();
-      if(!/^\d{4}$/.test(code)){
-      alert('Vui lòng nhập đúng 4 chữ số.');
-      staffCodeInput.focus();
-  return;
-    }
+      const tableNum = tableInput.value.trim();
 
+      if(!/^[\d]{4}$/.test(code) || !/^[A-Za-z0-9]+$/.test(tableNum)){
+        alert('Mã NV cần 4 số và số bàn gồm chữ/số (không dấu cách).');
+        return;
+      }
       staffCodeHidden.value = code;
+      tableHidden.value = tableNum;
       staffModal.style.display = 'none';
       mainCard.style.opacity = '1';
       mainCard.style.pointerEvents = 'auto';
@@ -134,50 +134,32 @@
     }
 
     confirmBtn.addEventListener('click', activateForm);
-    staffCodeInput.addEventListener('keydown', e => {
-      if(e.key === 'Enter'){
-        e.preventDefault();
-        activateForm();
-      }
-    });
+    [staffCodeInput, tableInput].forEach(inp => inp.addEventListener('keydown', e=>{if(e.key==='Enter'){e.preventDefault();activateForm();}}));
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       document.getElementById('timestamp').value = new Date().toISOString();
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
-
       if(!/^[0-9]{10}$/.test(data.phone)){
         alert('Anh/chị vui lòng nhập số điện thoại gồm đúng 10 chữ số.');
         return;
       }
-      data.restaurant = 'Cơ sở 1';
-
-      try {
-        await fetch(scriptURL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify(data)
-        });
-
+      data.restaurant = 'TRÂU NGON QUÁN';
+      try{
+        await fetch(scriptURL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
         thankYouText.textContent = `Cảm ơn anh/chị ${data.customerName} đã đánh giá!`;
         thankYouBox.style.display = 'flex';
-
         form.reset();
         document.querySelectorAll('.rating input').forEach(i=>i.checked=false);
-        submitBtn.disabled = true;
-        mainCard.style.opacity = '.3';
-        mainCard.style.pointerEvents = 'none';
-        staffCodeInput.value = '';
-        staffModal.style.display = 'flex';
+        submitBtn.disabled=true;
+        mainCard.style.opacity='.3';
+        mainCard.style.pointerEvents='none';
+        staffCodeInput.value='';tableInput.value='';
+        staffModal.style.display='flex';
         staffCodeInput.focus();
-
-      } catch(err){
-        console.error(err);
-        alert('Có lỗi xảy ra, vui lòng thử lại.');
-      }
-    });
+      }catch(err){console.error(err);alert('Có lỗi xảy ra, vui lòng thử lại.');}}
+    );
   </script>
 </body>
 </html>
