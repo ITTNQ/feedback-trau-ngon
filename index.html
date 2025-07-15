@@ -37,7 +37,12 @@
   <div id="staffModal" class="modal">
     <div class="modal-content">
       <h3>Nhập mã nhân viên phục vụ</h3>
-      <input id="staffCodeInput" placeholder="Ví dụ: NV05" />
+      <input id="staffCodeInput"
+       type="tel"
+       inputmode="numeric"
+       pattern="\d{4}"
+       maxlength="4"
+       placeholder="4 số cuối mã nv" />
       <button id="confirmStaff">Xác nhận</button>
     </div>
   </div>
@@ -114,11 +119,12 @@
 
     function activateForm(){
       const code = staffCodeInput.value.trim();
-      if(!code){
-        alert('Vui lòng nhập mã nhân viên.');
-        staffCodeInput.focus();
-        return;
-      }
+      if(!/^\d{4}$/.test(code)){
+      alert('Vui lòng nhập đúng 4 chữ số.');
+      staffCodeInput.focus();
+  return;
+    }
+
       staffCodeHidden.value = code;
       staffModal.style.display = 'none';
       mainCard.style.opacity = '1';
