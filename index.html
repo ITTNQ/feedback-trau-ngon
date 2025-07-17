@@ -53,7 +53,7 @@
 
   <!-- Form chính -->
   <div class="card" id="mainCard" style="opacity:.3;pointer-events:none;">
-    <h2>ĐÁNH GIÁ CHẤT LƯỢNG PHỤC VỤ</h2>
+    <h2>ĐÁNH GIÁ CHẤT LƯỢNG DỊCH VỤ</h2>
     <p class="restaurant-name">NHÀ HÀNG TRÂU NGON QUÁN</p>
 
     <form id="fbForm" autocomplete="off">
@@ -67,7 +67,8 @@
       <label for="phone">Số điện thoại</label>
       <input id="phone" name="phone" type="tel" inputmode="numeric" pattern="\d{10}" maxlength="10" placeholder="09xxxxxxxx" required title="Nhập đúng 10 chữ số">
 
-      <label>Chất lượng món ăn</label>
+     <label>Chất lượng món ăn</label>
+      <small>(Hương vị, độ tươi, trình bày món ăn...)</small>
       <div class="rating">
         <input id="food5" type="radio" name="foodQuality" value="5" required><label for="food5">★</label>
         <input id="food4" type="radio" name="foodQuality" value="4"><label for="food4">★</label>
@@ -77,6 +78,7 @@
       </div>
 
       <label>Phục vụ</label>
+      <small>(Thái độ nhân viên, tư vấn món ăn, tốc độ phục vụ...)</small>
       <div class="rating">
         <input id="service5" type="radio" name="service" value="5" required><label for="service5">★</label>
         <input id="service4" type="radio" name="service" value="4"><label for="service4">★</label>
@@ -85,7 +87,8 @@
         <input id="service1" type="radio" name="service" value="1"><label for="service1">★</label>
       </div>
 
-      <label>Vệ sinh</label>
+      <label>Không gian nhà hàng</label>
+      <small>(Sạch sẽ, ánh sáng, trang trí, âm thanh, bàn ghế gọn gàng...)</small>
       <div class="rating">
         <input id="clean5" type="radio" name="cleanliness" value="5" required><label for="clean5">★</label>
         <input id="clean4" type="radio" name="cleanliness" value="4"><label for="clean4">★</label>
@@ -95,7 +98,7 @@
       </div>
 
       <label for="notes">Ghi chú</label>
-      <textarea id="notes" name="notes" placeholder="Ấn tượng, món gọi, v.v."></textarea>
+      <textarea id="notes" name="notes" placeholder="Ấn tượng, vấn đề chưa hài lòng v.v."></textarea>
 
       <button type="submit" id="submitBtn" disabled>Gửi đánh giá</button>
     </form>
