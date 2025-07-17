@@ -67,8 +67,10 @@
       <label for="phone">Số điện thoại</label>
       <input id="phone" name="phone" type="tel" inputmode="numeric" pattern="\d{10}" maxlength="10" placeholder="09xxxxxxxx" required title="Nhập đúng 10 chữ số">
 
-      <label>Chất lượng món ăn</label>
-      <small>(Hương vị, độ tươi, trình bày món ăn...)</small>
+      <div style="margin-bottom: 12px;">
+          <label style="display: block; font-weight: bold;">Chất lượng món ăn</label>
+          <small style="display: block; color: #666;">(Hương vị, độ tươi, trình bày món ăn...)</small>
+      </div>
       <div class="rating">
         <input id="food5" type="radio" name="foodQuality" value="5" required><label for="food5">★</label>
         <input id="food4" type="radio" name="foodQuality" value="4"><label for="food4">★</label>
@@ -77,8 +79,10 @@
         <input id="food1" type="radio" name="foodQuality" value="1"><label for="food1">★</label>
       </div>
 
-      <label>Chất lượng phục vụ</label>
-      <small>(Thái độ nhân viên, tư vấn món ăn, tốc độ phục vụ...)</small>
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-weight: bold;">Chất lượng phục vụ</label>
+        <small style="display: block; color: #666;">(Thái độ nhân viên, tư vấn món ăn, tốc độ phục vụ...)</small>
+      </div>
       <div class="rating">
         <input id="service5" type="radio" name="service" value="5" required><label for="service5">★</label>
         <input id="service4" type="radio" name="service" value="4"><label for="service4">★</label>
@@ -87,8 +91,10 @@
         <input id="service1" type="radio" name="service" value="1"><label for="service1">★</label>
       </div>
 
-      <label>Không gian nhà hàng</label>
-      <small>(Sạch sẽ, ánh sáng, trang trí, âm thanh, bàn ghế gọn gàng...)</small>
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-weight: bold;">Không gian nhà hàng</label>
+        <small style="display: block; color: #666;">(Sạch sẽ, ánh sáng, trang trí, âm thanh, bàn ghế gọn gàng...)</small>
+      </div>
       <div class="rating">
         <input id="clean5" type="radio" name="cleanliness" value="5" required><label for="clean5">★</label>
         <input id="clean4" type="radio" name="cleanliness" value="4"><label for="clean4">★</label>
